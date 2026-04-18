@@ -1,3 +1,7 @@
+# App-Specific
+.azure
+
+
 # Logs
 logs
 *.log

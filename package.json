@@ -1,0 +1,10 @@
+{
+  "name": "test-web-app",
+  "private": "true",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "deploy": "NAME=mikeharder-test-web-app && az webapp up --name $NAME --resource-group $NAME --plan $NAME --runtime \"NODE:24-lts\" --sku F1 --os-type Linux --location westus2"
+  }
+}
