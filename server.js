@@ -9,6 +9,13 @@ const hostname = process.env.HOSTNAME;
 const port = process.env.PORT;
 
 const server = http.createServer((req, res) => {
+  if (req.url === "/health") {
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify({ status: "ok" }) + "\n");
+    return;
+  }
+
   const info = {
     serverTime: new Date().toISOString(),
     nodeEnv: process.env.NODE_ENV ?? "development",
