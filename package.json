@@ -7,5 +7,8 @@
     "start": "node server.js",
     "test": "curl -v https://mikeharder-test-web-app.azurewebsites.net",
     "deploy": "NAME=mikeharder-test-web-app && az webapp up --name $NAME --resource-group $NAME --plan $NAME --runtime \"NODE:24-lts\" --sku B1 --os-type Linux --location westus2"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
   }
 }

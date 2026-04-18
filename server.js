@@ -1,7 +1,12 @@
+import dotenv from "dotenv";
 import http from "node:http";
 
-const hostname = process.env.WEBSITE_HOSTNAME ? "0.0.0.0" : "127.0.0.1";
-const port = process.env.PORT || 3000;
+const envFile =
+  process.env.NODE_ENV === "production" ? ".env.production" : ".env";
+dotenv.config({ path: envFile });
+
+const hostname = process.env.HOSTNAME;
+const port = process.env.PORT;
 
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
