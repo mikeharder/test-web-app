@@ -1,4 +1,9 @@
 import { useAzureMonitor } from "@azure/monitor-opentelemetry";
+import { diag, DiagConsoleLogger, DiagLogLevel } from "@opentelemetry/api";
+
+if (process.env.OTEL_DIAG === "1") {
+  diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
+}
 
 if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
   useAzureMonitor({
