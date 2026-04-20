@@ -1,3 +1,4 @@
+import { trace } from "@opentelemetry/api";
 import dotenv from "dotenv";
 import http from "node:http";
 
@@ -10,6 +11,9 @@ const port = process.env.PORT;
 
 const server = http.createServer((req, res) => {
   console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
+
+  // inside handler, before res.end:
+  trace.getTracer("manual").startSpan("manual-test").end();
 
   if (req.url === "/health") {
     res.statusCode = 200;
