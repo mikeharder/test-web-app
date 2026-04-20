@@ -1,10 +1,34 @@
-import { trace } from "@opentelemetry/api";
+import { useAzureMonitor } from "@azure/monitor-opentelemetry";
+import {
+  diag,
+  DiagConsoleLogger,
+  DiagLogLevel,
+  trace,
+} from "@opentelemetry/api";
 import dotenv from "dotenv";
 import http from "node:http";
 
 const envFile =
   process.env.NODE_ENV === "production" ? ".env.production" : ".env";
 dotenv.config({ path: envFile });
+
+if (process.env.OTEL_DIAG === "1") {
+  diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
+}
+
+if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
+  useAzureMonitor({
+    azureMonitorExporterOptions: {
+      connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
+    },
+    enableLiveMetrics: true,
+  });
+  console.log("Azure Monitor OpenTelemetry enabled");
+} else {
+  console.log(
+    "APPLICATIONINSIGHTS_CONNECTION_STRING not set; skipping Azure Monitor",
+  );
+}
 
 const hostname = process.env.HOSTNAME;
 const port = process.env.PORT;
