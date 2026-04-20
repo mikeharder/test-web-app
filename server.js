@@ -17,12 +17,7 @@ if (process.env.OTEL_DIAG === "1") {
 }
 
 if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-  useAzureMonitor({
-    azureMonitorExporterOptions: {
-      connectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING,
-    },
-    enableLiveMetrics: true,
-  });
+  useAzureMonitor({ enableLiveMetrics: true });
   console.log("Azure Monitor OpenTelemetry enabled");
 } else {
   console.log(
@@ -36,8 +31,10 @@ const port = process.env.PORT;
 const server = http.createServer((req, res) => {
   console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
 
-  // inside handler, before res.end:
-  trace.getTracer("manual").startSpan("manual-test").end();
+  if (process.env.OTEL_DIAG === "1") {
+    // inside handler, before res.end:
+    trace.getTracer("manual").startSpan("manual-test").end();
+  }
 
   if (req.url === "/health") {
     res.statusCode = 200;
