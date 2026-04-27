@@ -1,10 +1,4 @@
 import { useAzureMonitor } from "@azure/monitor-opentelemetry";
-import {
-  diag,
-  DiagConsoleLogger,
-  DiagLogLevel,
-  trace,
-} from "@opentelemetry/api";
 import dotenv from "dotenv";
 import http from "node:http";
 
@@ -30,11 +24,6 @@ const port = process.env.PORT;
 
 const server = http.createServer((req, res) => {
   console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
-
-  if (process.env.OTEL_DIAG === "1") {
-    // inside handler, before res.end:
-    trace.getTracer("manual").startSpan("manual-test").end();
-  }
 
   if (req.url === "/health") {
     res.statusCode = 200;
