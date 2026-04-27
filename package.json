@@ -5,13 +5,14 @@
   "main": "server.js",
   "scripts": {
     "start": "node --import @azure/monitor-opentelemetry/loader server.js",
-    "test": "curl -v https://mikeharder-test-web-app.azurewebsites.net",
+    "test": "curl -v https://mikeharder-test-web-app.azurewebsites.net/test",
     "test:health": "curl -v https://mikeharder-test-web-app.azurewebsites.net/health",
-    "deploy": "az webapp up --name mikeharder-test-web-app --resource-group mikeharder-test-plan --plan mikeharder-test-plan --runtime \"NODE:24-lts\" --sku P0V4 --os-type Linux --location westus2"
+    "build": "rm -rf dist && mkdir -p dist/stage && cp package.json package-lock.json server.js dist/stage/ && npm --prefix dist/stage ci --omit=dev --no-audit --no-fund --prefer-offline && (cd dist/stage && 7z a -tzip -mmt=on ../app.zip .)",
+    "deploy": "npm run build && az webapp deploy --name mikeharder-test-web-app --resource-group mikeharder-test-plan --src-path dist/app.zip --type zip",
+    "provision": "az group create -n mikeharder-test-plan -l westus2 && az appservice plan create -g mikeharder-test-plan -n mikeharder-test-plan --sku P0V4 --is-linux && az webapp create -g mikeharder-test-plan -n mikeharder-test-web-app --plan mikeharder-test-plan --runtime \"NODE:24-lts\" && az webapp config appsettings set -g mikeharder-test-plan -n mikeharder-test-web-app --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false WEBSITE_RUN_FROM_PACKAGE=1"
   },
   "dependencies": {
     "@azure/monitor-opentelemetry": "^1.16.0",
-    "@opentelemetry/api": "^1.9.1",
     "dotenv": "^17.4.2"
   }
 }
