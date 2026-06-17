@@ -1,6 +1,6 @@
 import { useAzureMonitor } from "@azure/monitor-opentelemetry";
 import dotenv from "dotenv";
-import http from "node:http";
+import http, { type IncomingMessage, type ServerResponse } from "node:http";
 
 const envFile =
   process.env.NODE_ENV === "production" ? ".env.production" : ".env";
@@ -22,7 +22,7 @@ if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
 const hostname = process.env.HOSTNAME;
 const port = process.env.PORT;
 
-const server = http.createServer((req, res) => {
+const server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
   console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
 
   if (req.url === "/health") {
